@@ -1,8 +1,11 @@
 # ReplayMarketData
 The Python ReplayMarketData Client For Replaying Daily Market Data At Wish.
 
+## Requirements
+This project requires Python 3.11 or later.
+
 ## Quickstart
-You can install the package via `pip install -U git+https://github.com/Indian-Algorithmic-Trading-Community/DhanHQ-Ticker-py.git` or `pip install replaymarketdata-0.1.0-py3-none-any.whl`
+You can install the package via `pip install -U git+https://github.com/Indian-Algorithmic-Trading-Community/ReplayMarketData.git` or `pip install replaymarketdata-0.1.0-py3-none-any.whl`
 
 ## Demo Video Showcasing How To Use This [YouTube Video](https://www.youtube.com/watch?v=pkOVS5Vb2fo)
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=pkOVS5Vb2fo" target="_blank">
