@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import (
+    Generator,
     Set,
     List,
     Optional,
@@ -236,9 +237,6 @@ class ReplayMarketData:
             exit(0)
         self._start_replaying: bool = False
         self.call_for_exit: bool = False
-        self.__global_buffer_size = 1024 * 1024 * 10
-        self.__global_buffer = bytearray(self.__global_buffer_size)
-        self.__global_memoryview = memoryview(self.__global_buffer)
         self.__initialize_loop()
         self.run()
 
@@ -477,25 +475,18 @@ class ReplayMarketData:
                 self._datas_to_be_replayed = []
             await asyncio.sleep(0.001)
 
-    def read_binary_file(self, file: Path):
+    def read_binary_file(self, file: Path) -> Generator[bytes, Any, None]:
         with open(file, "rb") as f:
             mmapped_file = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
             length_bytes = mmapped_file.read(4)
             while length_bytes:
                 length = struct.unpack(">I", length_bytes)[0]
-                if len(self.__global_memoryview) < length:
-                    self.__global_buffer_size = max(
-                        length, self.__global_buffer_size * 2
-                    )
-                    self.__global_buffer = bytearray(self.__global_buffer_size)
-                    self.__global_memoryview = memoryview(self.__global_buffer)
-                data_buffer = self.__global_memoryview[:length]
                 try:
-                    data_buffer[:length] = mmapped_file.read(length)
+                    data = mmapped_file.read(length)
                 except ValueError as err:
                     self.log.error("Reached End Of The File: %s, Error: %s", file, err)
                 else:
-                    yield bytes(data_buffer)
+                    yield bytes(data)
                 finally:
                     length_bytes = mmapped_file.read(4)
 
